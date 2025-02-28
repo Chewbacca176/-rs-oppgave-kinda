@@ -1,0 +1,38 @@
+{% extends "navbar.html" %}
+{% block body %}
+
+{% for antall in range(highscore_liste) %}
+    <div class="bestillinger_boxbox">
+        <div class="bok-tekst">
+            <p>Brukernavn: {{ global_highscore[antall][3] }}</p>
+            <p>Poeng: {{ global_highscore[antall][0] }}</p>
+            <p>Tidspunkt: {{ global_highscore[antall][1] }}</p>
+        </div>
+    </div>
+    
+{% endfor %}  
+
+<style>
+          
+    .bestillinger_boxbox {
+         width: auto;
+         border-radius: 5px;
+         margin: 10px;
+         padding: 10px;
+         border: 2px solid black;
+         box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+         animation-duration: 5s;
+         animation-iteration-count: infinite;
+     }
+ 
+     
+     .bok-tekst {
+         width: 100%;
+         display: flex;
+         justify-content: space-between;
+ 
+     }
+ 
+ </style>
+
+{% endblock %}
