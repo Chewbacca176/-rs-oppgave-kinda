@@ -1,23 +1,26 @@
 function epilepi(){
-    console.log("called epi");
-    
-    // const wrapper = document.querySelector(".bestillinger_box")
     let boxes = document.querySelectorAll(".bestillinger_boxbox")
     setInterval(function test() {
         for (let i = 0; i < boxes.length; i++) {
             console.log("in for loop");
             boxes[i].style.backgroundColor = getRandomColor()
             document.body.style.backgroundColor = getRandomColor()
+            document.addEventListener("keydown", function(event) {
+                if (event.key === "g") {
+                    throw new Error("Epilepi gone sad");
+                }
+            });
         }
-        // boxes[i].animation
-        // console.log(boxes[i])
-        // boxes[i].style.animationDelay = `${i * 0.2}s`;
-        // boxes[i].style.animationDuration = '1s';
+        
     }, 5);
-    // open('/sebestillinger', "new", "height=10, width=10")
-    // open('/sebestillinger');
+    
 }
 
+document.addEventListener("keydown", function(event) {
+    if (event.key === "f") {
+        epilepi();
+    }
+});
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -42,8 +45,23 @@ function nullstill() {
     document.querySelector('.tilbakemelding').style.visibility = 'hidden'; 
 }
 
-function test1() {
-    console.log("called test1");
-}
 
-document.querySelector('#admin').addEventListener("click", function() {admin_passord();})
+let sideVerdi = document.querySelector('.hidden');
+const velgSide =  document.querySelectorAll('.velg_side');
+
+velgSide.forEach(function(element) {
+    element.addEventListener('click', function(e) {
+        for (side of velgSide) {
+            side.style.backgroundColor = '';
+        }
+        sideVerdi.value = e.target.id;
+        document.forms["side_form"].submit();
+        e.target.style.backgroundColor = 'lightblue';
+    });
+});
+
+let admin = document.querySelector('#admin');
+console.log(admin);
+admin.addEventListener("click", function(){
+    admin_passord()
+});

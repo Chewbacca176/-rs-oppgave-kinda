@@ -2,8 +2,8 @@
 {% block body %}
 
 {% for antall in range(highscore_liste) %}
-    <div class="bestillinger_boxbox">
-        <div class="bok-tekst">
+    <div class="poeng_boks">
+        <div class="poeng_tekst">
             <p>Brukernavn: {{ global_highscore[antall][3] }}</p>
             <p>Poeng: {{ global_highscore[antall][0] }}</p>
             <p>Tidspunkt: {{ global_highscore[antall][1] }}</p>
@@ -14,7 +14,7 @@
 
 <style>
           
-    .bestillinger_boxbox {
+    .poeng_boks {
          width: auto;
          border-radius: 5px;
          margin: 10px;
@@ -26,7 +26,7 @@
      }
  
      
-     .bok-tekst {
+     .poeng_tekst {
          width: 100%;
          display: flex;
          justify-content: space-between;

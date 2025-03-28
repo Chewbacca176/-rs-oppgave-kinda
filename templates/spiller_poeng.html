@@ -1,0 +1,47 @@
+{% extends "navbar.html" %}
+{% block body %}
+
+
+
+{% for antall in range(poeng_id) %}
+    <div class="poeng_boks">
+        <div class="poeng_tekst">
+            <p>Brukernavn: {{ username }}</p>
+            <p>Poeng: {{ spiller_poeng_liste[0][antall][0] }}</p>
+            <p>Tidspunkt: {{ spiller_poeng_liste[0][antall][1] }}</p>
+        </div>
+    </div>
+    
+{% endfor %}  
+
+
+
+<style>
+   
+
+        
+   .poeng_boks {
+        width: auto;
+        border-radius: 5px;
+        margin: 10px;
+        padding: 10px;
+        border: 2px solid black;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        animation-duration: 5s;
+        animation-iteration-count: infinite;
+    }
+
+    
+    .poeng_tekst {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+
+    }
+
+    
+  
+
+</style>
+
+{% endblock %}

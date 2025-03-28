@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session, redirect
 import random
-from database import logg_inn, opprett_bruker, sebokbestillinger, delete_bestillinger, admin_info, highscore
+from database import logg_inn, opprett_bruker, bokbestillinger, sebokbestillinger, delete_bestillinger, admin_info, highscore, spiller_poeng
 
 app = Flask(__name__)
 
@@ -11,10 +11,17 @@ bruker = None
 @app.context_processor
 def current_user():
     
-    return dict(username=session.get('username'), role=session.get('role'), logg_inn=session.get('logginn'))
-@app.route('/')
+    return dict(username=session.get('username'), role=session.get('role'), logg_inn=session.get('logginn'), side=session.get('side'))
+@app.route('/', methods=['GET','POST'])
 def home():
-    return render_template("index.html")
+    if request.method == 'POST':
+        print("test")
+        side = request.form.get("side")
+        session["side"] = side
+        print(side)
+        return render_template("index.html")
+    else:
+        return render_template("index.html")
 
 @app.errorhandler(404)
 def error(error_code):
@@ -34,32 +41,55 @@ def admin():
 def logginn():
     return render_template("logginn.html")
     
-
-
-
 @app.route('/loggut')
 def loggut():
     global bruker 
+    side = session["side"]
     session.clear()
+    session["side"] = side
     bruker = None
     
     return redirect('/logginn')
 
-@app.route('/sebestillinger')
-def sebestillinger():
+@app.route('/bestillinger')
+def bestillinger():
+    return render_template("bestillinger.html")
+
+@app.route('/spiller_poeng')
+def spillerPoeng():
     if session.get('email'):
         try:
-            bokbestillingliste = sebokbestillinger()
-            bok_id = len(bokbestillingliste[0])
-            print(bok_id) 
+            spiller_poeng_liste = spiller_poeng()
+            poeng_id = len(spiller_poeng_liste[0])
+            
         
-            return render_template("sebestillinger.html", bestilling_liste=bokbestillingliste, bok_id=bok_id)
+            return render_template("spiller_poeng.html", spiller_poeng_liste=spiller_poeng_liste, poeng_id=poeng_id)
         except TypeError:
-            return "Logg inn for å se bestillinger"
+            return "Logg inn for å se score"
     else:
-        tilbakemelding = "Logg inn for å se bestillinger" 
+        tilbakemelding = "Logg inn for å se score" 
         return render_template("logginn.html", tilbakemelding_registrering=tilbakemelding)
     
+@app.route('/sebestillinger', methods=['GET', 'POST'])
+def sebestillinger():
+    if request.method == 'GET':
+        if session.get('email'):
+            try:
+                bokbestillingliste = sebokbestillinger()
+                bokbestillingliste1 = bokbestillingliste[0]
+                bokbestillingliste2 = bokbestillingliste[1]
+                bok_id = len(bokbestillingliste1["boknavn"][0])
+                return render_template("sebestillinger.html", bestilling_liste=bokbestillingliste1, bok_id_liste=bokbestillingliste2, bok_id=bok_id)
+            except TypeError:
+                return "Logg inn for å se bestillinger"
+        else:
+            tilbakemelding = "Logg inn for å se bestillinger" 
+            return render_template("logginn.html", tilbakemelding_registrering=tilbakemelding)
+        
+    elif request.method == 'POST':
+        bokid = request.form.get("bok")
+        delete_bestillinger(bokid)
+        return redirect("/sebestillinger")
 
 @app.route('/sebestillinger', methods=['GET', 'POST'])
 def slett_bestillinger():
@@ -67,6 +97,16 @@ def slett_bestillinger():
         bok_id = request.form.get("bok")
         delete_bestillinger(bok_id)
 
+@app.route('/bestillinger', methods=['GET', 'POST'])
+def bok_bestillinger():
+    if request.method == 'POST':
+        Boknavn = request.form['Boknavn']
+        Sider = request.form['Sider']
+        Ord = request.form['Ord']
+        Beskrivelse = request.form['Beskrivelse'] 
+        bok_bestilling = bokbestillinger(bruker[0], Boknavn, Sider, Ord, Beskrivelse) 
+        return render_template("bestillinger.html", bok_bestilling=bok_bestilling)
+     
 
 @app.route('/registrer')
 def registrer():
@@ -120,6 +160,12 @@ def global_score():
     highscore_liste = len(global_highscore)
 
     return render_template("global.html", global_highscore=global_highscore, highscore_liste=highscore_liste)
+
+
+@app.route('/boks_produksjon')
+def boks_produksjon():
+    return render_template("boks_produksjon.html")
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=3000)

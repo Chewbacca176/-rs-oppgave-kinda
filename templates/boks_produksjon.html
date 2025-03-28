@@ -1,0 +1,37 @@
+{% extends "navbar.html" %}
+{% block body %}
+
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style2.css')}}">
+</head>
+
+<div class="hele-siden">
+    <div class="input-halvdel">
+        
+    <p>Farge på boks?<input type="color" class="boks-specs"></p>
+    <input type="text" placeholder="skrive ting?" class="boks-specs tekst">
+    <p>Farge på tekst?<input type="color" class="boks-specs tekst-farge"></p>
+    <p>skrift størrelse?
+        <select>
+            <option class="skrift-størrelse" data-størrelse="p">p</option>
+            <option class="skrift-størrelse" data-størrelse="h1">h1</option>
+            <option class="skrift-størrelse" data-størrelse="h2">h2</option>
+            <option class="skrift-størrelse" data-størrelse="h3">h3</option>
+            <option class="skrift-størrelse" data-størrelse="h4">h4</option>
+            <option class="skrift-størrelse" data-størrelse="h4">h5</option>
+            <option class="skrift-størrelse" data-størrelse="h4">h6</option>
+        </select>
+    </p>
+    <input type="text" placeholder="boks bredde?" class="boks-specs boks-bredde">
+    <input type="text" placeholder="boks høyde?" class="boks-specs boks-høyde">
+    <input type="text" placeholder="runde kanter?" class="boks-specs border-radius">
+    <p>margin?<input type="checkbox" class="boks-specs margin"></p>
+    <p>knapp?<input type="checkbox" class="boks-specs mysteri-knapp"></p>
+    <input type="number" placeholder="hvor mange bokser?" class="boks-specs boks-antall">
+    <button id="lag-boks">Lag boks</button>
+    </div>
+    <div class="display-halvdel" id="boks-holder"></div>
+</div>
+<script src="{{url_for('static', filename='js/script2.js')}}"></script>
+{% endblock %}

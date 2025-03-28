@@ -8,15 +8,35 @@
 </head>
 <body>
     <div class="navbar">
-        <a href="/" id="main">main</a>
-        <a href="/registrer" id="main">registrer</a>
-        {% if logg_inn %}
-            <a href="/loggut" id="main">loggut</a>
+        {%if side == "side1"%}
+            <a href="/" class="main">main</a>
+            <a href="/registrer" class="main">registrer</a>
+            {% if logg_inn %}
+                <a href="/loggut" class="main">logg ut</a>
+            {% else %}
+                <a href="/logginn" class="main">logg inn</a>
+            {% endif %}
+            <a href="/spiller_poeng" class="main">score</a>
+            <a href="/global" class="main">global score</a>
+
+        {%elif side == "side2"%}
+            <a href="/" class="main">main</a>
+            <a href="/registrer" class="main">registrer</a>
+            {% if logg_inn %}
+                <a href="/loggut" class="main">logg ut</a>
+            {% else %}
+                <a href="/logginn" class="main">logg inn</a>
+            {% endif %}
+                <a href="/bestillinger" class="main">bestill</a>
+                <a href="/sebestillinger" class="main">se bestillinger</a>
+
+        {%elif side == "side3" %}
+            <a href="/" class="main">main</a>
+            <a href="/boks_produksjon" class="main">Bokser?</a>
+
         {% else %}
-            <a href="/logginn" id="main">logginn</a>
-        {% endif %}
-        <a href="/sebestillinger" id="main">score</a>
-        <a href="/global" id="main">global score</a>
+            <a href="/" class="main">main</a>
+        {%endif%}
     </div>
     {% if username %}
         <p>Du er logget inn som: {{username}}, med rollen: {{role}}.</p>
@@ -37,6 +57,7 @@
             color: black;
             padding: 14px 16px;
             font-size: 17px;
+            z-index: 1000;
         }
         .navbar {
             background-color: white;
@@ -45,13 +66,15 @@
             align-items: center;
             border: groove black 5px;
             text-align: center;
+            z-index: 1000;
             
         }
-       #main {
+       .main {
             color: black;
             border: black groove 5px;
             padding: 25px;
             width: 100%;
+            z-index: 1000;
             
        }
        

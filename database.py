@@ -38,6 +38,19 @@ def create_database():
             oppnådd_tidspunkt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (bruker_id) REFERENCES brukere(bruker_id) ON DELETE CASCADE
         );''')
+    
+    cursor.execute('''CREATE TABLE if not exists bokbestillinger (
+            bok_id INT AUTO_INCREMENT PRIMARY KEY,
+            bruker_id INT NOT NULL,
+            Boknavn VARCHAR(255) NOT NULL,
+            Sider VARCHAR(255) NOT NULL,
+            Ord VARCHAR(255) NOT NULL ,
+            Beskrivelse VARCHAR(255) NOT NULL, 
+            is_active VARCHAR(255) NOT NULL DEFAULT 'yes',
+            opprettet_tidspunkt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (bruker_id) REFERENCES brukere(bruker_id) ON DELETE CASCADE
+        );''')
+    
     db.commit()
     db.close()
 
@@ -86,13 +99,13 @@ def logg_inn(email, passord):
 
 
 
-def sebokbestillinger():
+def spiller_poeng():
     poengliste = []
     db = connect_to_db()
     cursor = db.cursor()
     try:
         
-        sql = "SELECT poeng, oppnådd_tidspunkt FROM poeng_liste WHERE bruker_id = " + str(id_bruker[0]) + " order by poeng DESC"
+        sql = "SELECT poeng, oppnådd_tidspunkt FROM poeng_liste WHERE bruker_id = " + str(id_bruker[0]) + " order by poeng DESC limit 10"
         cursor.execute(sql)
         poengliste.append(cursor.fetchall())
 
@@ -117,7 +130,7 @@ def highscore():
     cursor = db.cursor()
     try:
         
-        sql = "SELECT poeng, oppnådd_tidspunkt, bruker_id FROM poeng_liste order by poeng DESC"
+        sql = "SELECT poeng, oppnådd_tidspunkt, bruker_id FROM poeng_liste order by poeng DESC limit 20"
         cursor.execute(sql)
         fullpoengliste.append(cursor.fetchall())
         
@@ -150,10 +163,68 @@ def admin_info():
     db.close()
     
     return bruker_info
-    
-def delete_bestillinger(bok_id):
+
+
+def bokbestillinger(bruker_id, Boknavn, Sider, Ord, Beskrivelse):
     db = connect_to_db()
     cursor = db.cursor()
+    if bruker_id is not None:
+        try:
+            sql = "INSERT INTO bokbestillinger  (bruker_id, Boknavn, Sider, Ord, Beskrivelse) VALUES (%s, %s, %s, %s, %s)"
+            cursor.execute(sql, (int(bruker_id), Boknavn, Sider, Ord, Beskrivelse))
+            db.commit()
+            db.close()
+            return "Bokbestilling registrert!"
+        except mysql.connector.Error as error:
+            return str(error)
+    else:
+        return "Vennligst logg inn for å bestille bøker."
     
-    sql = "update bestillinger set is_active = 'no' where bruker_id = %s"
-    cursor.execute(sql, bok_id)
+
+def sebokbestillinger():
+    bok_id_liste = []
+    db = connect_to_db()
+    cursor = db.cursor()
+    try:
+        bestilling = {"boknavn": [], "sider": [], "ord": [], "beskrivelse": []}
+        sql = "SELECT Boknavn FROM bokbestillinger WHERE bruker_id = " + str(id_bruker[0]) + " AND is_active = 'yes'"
+        cursor.execute(sql)
+        bestilling["boknavn"].append(cursor.fetchall())
+
+        sql = "SELECT Sider FROM bokbestillinger WHERE bruker_id = " + str(id_bruker[0]) + " AND is_active = 'yes'"
+        cursor.execute(sql)
+        bestilling["sider"].append(cursor.fetchall())
+
+        sql = "SELECT Ord FROM bokbestillinger WHERE bruker_id = " + str(id_bruker[0]) + " AND is_active = 'yes'"
+        cursor.execute(sql)
+        bestilling["ord"].append(cursor.fetchall())
+
+        sql = "SELECT Beskrivelse FROM bokbestillinger WHERE bruker_id = " + str(id_bruker[0]) + " AND is_active = 'yes'" 
+        cursor.execute(sql)
+        bestilling["beskrivelse"].append(cursor.fetchall())
+
+    
+        sql = "SELECT bok_id FROM bokbestillinger WHERE bruker_id = " + str(id_bruker[0]) + " AND is_active = 'yes'"
+        cursor.execute(sql)
+        bok_id_liste.append(cursor.fetchall())
+        
+        db.close()
+        liste = [bestilling, bok_id_liste]
+        return liste
+
+    except NameError:
+        return "Logg inn for å se bestillinger"
+    except TypeError:
+        return "Logg inn for å se bestillinger"
+    except IndexError:
+
+        return "Ingen bokbestilling registrert."
+
+def delete_bestillinger(bokid):
+    
+    db = connect_to_db()
+    cursor = db.cursor()
+    sql = "update bokbestillinger set is_active = 'no' where bok_id = " + bokid
+    cursor.execute(sql)
+    
+    db.close()
