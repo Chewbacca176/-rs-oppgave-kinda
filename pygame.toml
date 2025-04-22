@@ -1,0 +1,10 @@
+[project]
+name = "main"
+
+[files]
+"pygmeBilder/space3.jpeg" = "pygmeBilder/space3.jpeg"
+"pygmeBilder/heart.png" = "pygmeBilder/heart.png"
+"pygmeBilder/crab.png" = "pygmeBilder/crab.png"
+"pygmeBilder/astroide.png" = "pygmeBilder/astroide.png"
+"pygmeBilder/Health-potion.png" = "pygmeBilder/health-potion.png"
+"pygameBilder/kaktus.png" = "pygameBilder/kaktus.png"

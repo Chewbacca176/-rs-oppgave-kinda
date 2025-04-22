@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect, url_for, send_from_directory, send_file
 import random
 from database import logg_inn, opprett_bruker, bokbestillinger, sebokbestillinger, delete_bestillinger, admin_info, highscore, spiller_poeng
 
@@ -22,6 +22,10 @@ def home():
         return render_template("index.html")
     else:
         return render_template("index.html")
+    
+
+
+
 
 @app.errorhandler(404)
 def error(error_code):
@@ -166,6 +170,11 @@ def global_score():
 def boks_produksjon():
     return render_template("boks_produksjon.html")
 
+
+@app.route('/pygameSpill')
+def pygameSpill():
+    # return render_template("http://localhost:3001/")
+    return render_template("spill.html")
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=3000)

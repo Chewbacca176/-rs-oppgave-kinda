@@ -2,17 +2,41 @@ import mysql.connector
 import bcrypt
 
 
+HighScore = []
 bruker = []
+
+def connect_to_mariadb():
+    mydb = mysql.connector.connect(
+                host="127.0.0.1",
+                user="Anders",
+                password="Anders2018",
+                charset="utf8mb4",
+                collation="utf8mb4_general_ci",
+                port = 3306
+                )
+    
+    return mydb
+
+def make_database():
+    db = connect_to_mariadb()
+    cursor = db.cursor()
+    cursor.execute('''
+        create database if not exists portfoolje;
+        ''')
+make_database()
+
 def connect_to_db():
     mydb = mysql.connector.connect(
                 host="127.0.0.1",
                 user="Anders",
                 password="Anders2018",
-                database="nettsidespill"
+                database="portfoolje",
+                charset="utf8mb4",
+                collation="utf8mb4_general_ci",
+                port = 3306
                 )
     
     return mydb
-
 def create_database():
     db = connect_to_db()
     cursor = db.cursor()
@@ -97,7 +121,26 @@ def logg_inn(email, passord):
     except TypeError:
         return "Feil email eller passord."
 
+def lagre_poeng(bruker, score):
+        db = connect_to_db()
+        cursor = db.cursor()
 
+        sql = "INSERT INTO poeng_liste (bruker_id, poeng) VALUES (%s, %s)"
+        cursor.execute(sql, (bruker[0], score))
+        db.commit()
+        db.close()
+
+def hent_poeng(bruker):
+    db = connect_to_db()
+    cursor = db.cursor()
+
+    sql = "SELECT poeng FROM poeng_liste WHERE bruker_id = " + str(bruker[0])
+    cursor.execute(sql)
+    
+    poeng_liste = cursor.fetchall()
+    for values in poeng_liste:
+        HighScore.append(values[0])
+    db.close()
 
 def spiller_poeng():
     poengliste = []

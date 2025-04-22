@@ -26,3 +26,7 @@
 .hide {
     display:none;
 }
+
+.velg_side {
+    cursor: pointer;
+}

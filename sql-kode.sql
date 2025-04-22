@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS portfølje;
+CREATE DATABASE IF NOT EXISTS portfoolje;
 
 
 CREATE TABLE brukere (
