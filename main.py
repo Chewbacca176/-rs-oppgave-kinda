@@ -2,9 +2,9 @@ import random
 import pygame 
 import asyncio
 import sys
+
 # if sys.platform != "emscripten":
 #     from database import opprett_bruker, logg_inn, connect_to_db
-
 
 pygame.init()
 
@@ -53,17 +53,6 @@ etternavn = pygame.Rect(WIDTH // 2 - 600, HEIGHT // 2 + 250, 200, 100)
 etternavn2 = pygame.Rect(WIDTH // 2  - 300, HEIGHT // 2 + 250, 200, 100)
 
 
-
-
-
-
-
-    
-
-
-
-
-    
 
 class Player(pygame.sprite.Sprite):
     def __init__(self,x,y):
@@ -163,7 +152,6 @@ timer, score = 0,0
 
 
 
-      
 async def opprett_bruker_side():
     global id 
     email_tekst = ''
@@ -219,7 +207,7 @@ async def opprett_bruker_side():
                     skrive_boks = 0
                 else: 
                     etternavn_tekst += event.unicode
-
+                    
         pygame.draw.rect(screen, GREEN, opprett_bruker_knapp2)
         pygame.draw.rect(screen, GREEN, bruker_navn)
         pygame.draw.rect(screen, GREEN, bruker_navn2)
@@ -294,6 +282,8 @@ async def logg_inn_side():
         pygame.display.flip()
         clock.tick(FPS)
         await asyncio.sleep(0) 
+
+# start skjerm
 async def start_loop():   
             while True:
                 screen.fill(BLACK)
@@ -318,16 +308,16 @@ async def start_loop():
 
                 pygame.display.flip()
                 clock.tick(FPS)
-                await asyncio.sleep(0) 
-        
+                await asyncio.sleep(0)
+
+# main spill loop    
 async def main():
     global timer, score 
     while True:         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-
-        
+ 
         h_vegg = [WIDTH, random.randint(0,HEIGHT)]
         v_vegg = [0, random.randint(0,HEIGHT)]
         tak = [random.randint(0,WIDTH), 0]
@@ -348,9 +338,6 @@ async def main():
                 kaktus = Kaktus(random.randint(0, WIDTH), random.randint(0, HEIGHT))
                 all_sprites.add(kaktus)
 
-
-            
-
         screen.blit(bg,(0,0))
         all_sprites.update()
         all_sprites.draw(screen)
@@ -362,6 +349,7 @@ async def main():
         for i in range(player.lives):
             screen.blit(heart_img, (WIDTH - 50 - i * 50, 10))
 
+# død/start på nytt loop
         if player.lives <= 0:
             draw_text("GAME OVER", pygame.font.Font(None, 100), RED, screen, WIDTH // 2, HEIGHT // 2)
             draw_text(f"Final Score: {score}", pygame.font.Font(None, 50), GREEN, screen, WIDTH // 2, HEIGHT // 2 + 100)
@@ -392,10 +380,9 @@ async def main():
                 pygame.display.flip()
                 clock.tick(FPS)
                 
-
         pygame.display.flip()
         clock.tick(FPS)
         await asyncio.sleep(0) 
         
-
+# starter spillet
 asyncio.run(start_loop())

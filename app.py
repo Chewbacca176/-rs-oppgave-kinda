@@ -1,17 +1,22 @@
 from flask import Flask, render_template, request, session, redirect, url_for, send_from_directory, send_file
 import random
 from database import logg_inn, opprett_bruker, bokbestillinger, sebokbestillinger, delete_bestillinger, admin_info, highscore, spiller_poeng
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
-app.secret_key = "idkmaaaan"
+app.secret_key = os.getenv("SECRET_KEY")
 
 bruker = None
 
 @app.context_processor
 def current_user():
     
-    return dict(username=session.get('username'), role=session.get('role'), logg_inn=session.get('logginn'), side=session.get('side'))
+    return dict(username=session.get('username'), role=session.get('role'), logg_inn=session.get('logginn'), side=session.get('side'), tilbakemelding=session.get('tilbakemelding'))
+
 @app.route('/', methods=['GET','POST'])
 def home():
     if request.method == 'POST':
@@ -39,7 +44,7 @@ def admin():
 
         return render_template("admin.html", bruker_info=bruker_info, brukere=brukere)
     else:
-        return render_template("index.html"), 401
+        return redirect("/")
     
 @app.route('/logginn')
 def logginn():
@@ -61,6 +66,7 @@ def bestillinger():
 
 @app.route('/spiller_poeng')
 def spillerPoeng():
+    session["tilbakemelding"] = None
     if session.get('email'):
         try:
             spiller_poeng_liste = spiller_poeng()
@@ -71,11 +77,13 @@ def spillerPoeng():
         except TypeError:
             return "Logg inn for å se score"
     else:
-        tilbakemelding = "Logg inn for å se score" 
-        return render_template("logginn.html", tilbakemelding_registrering=tilbakemelding)
+        tilbakemelding = "Logg inn for å se score"
+        session["tilbakemelding"] = tilbakemelding 
+        return redirect("/logginn")
     
 @app.route('/sebestillinger', methods=['GET', 'POST'])
 def sebestillinger():
+    session["tilbakemelding"] = None 
     if request.method == 'GET':
         if session.get('email'):
             try:
@@ -88,18 +96,14 @@ def sebestillinger():
                 return "Logg inn for å se bestillinger"
         else:
             tilbakemelding = "Logg inn for å se bestillinger" 
-            return render_template("logginn.html", tilbakemelding_registrering=tilbakemelding)
+            session["tilbakemelding"] = tilbakemelding
+            return redirect("/logginn")
         
     elif request.method == 'POST':
         bokid = request.form.get("bok")
         delete_bestillinger(bokid)
         return redirect("/sebestillinger")
 
-@app.route('/sebestillinger', methods=['GET', 'POST'])
-def slett_bestillinger():
-    if request.method == "POST":
-        bok_id = request.form.get("bok")
-        delete_bestillinger(bok_id)
 
 @app.route('/bestillinger', methods=['GET', 'POST'])
 def bok_bestillinger():

@@ -15,7 +15,9 @@
             </div>
         </form>
         <div class="tilbakemelding" onload="tilbakemelding_knapp()">
-            {{ tilbakemelding_registrering }}
+            {% if tilbakemelding %}
+                <p>{{tilbakemelding}}</p>
+            {% endif %}
         </div>
         
     </div>

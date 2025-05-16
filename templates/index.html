@@ -2,9 +2,9 @@
 {% block body %}
     
 <form action="/" method="POST" id="side_form">
-    <div class="velg_side" id="side1" >Spill-nettside</div>
-    <div class="velg_side" id="side2">Bestilling-nettside</div>
-    <div class="velg_side" id="side3">BoksLage-nettside</div>
+    <div class="velg_side" id="1" >Spill-nettside</div>
+    <div class="velg_side" id="2">Bestilling-nettside</div>
+    <div class="velg_side" id="3">BoksLage-nettside</div>
     <input class="hidden" name="side" value={{side}} >
 </form>  
 
@@ -23,6 +23,9 @@
         text-align: center;
         width: 33.33%;
         height : 100vh;
+        font-size: 30px;
+        font-weight: bold;
+        
         
     }
     .velg_side:hover {

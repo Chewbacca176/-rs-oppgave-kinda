@@ -29,7 +29,7 @@ function getRandomColor() {
     return color;
   }
 
-document.addEventListener('DOMContentLoaded', function() {epilepi();});
+// document.addEventListener('DOMContentLoaded', function() {epilepi();});
 
 function tilbakemelding_knapp() {
     console.log("called tilbakemelding_knapp")
@@ -44,10 +44,19 @@ function nullstill() {
     document.querySelector('.tilbakemelding').style.visibility = 'hidden'; 
 }
 
+let duErHerKnapp = document.createElement('div');
+duErHerKnapp.classList.add('duErHerKnapp');
+let duErHerKnappP = document.createElement('p');
+duErHerKnappP.innerHTML = "Du er her";  
+duErHerKnappP.classList.add('duErHerKnappP');
+duErHerKnapp.appendChild(duErHerKnappP);
+
 let sideVerdi = document.querySelector('.hidden');
 
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById(sideVerdi.value).style.backgroundColor = 'lightblue';
+    let side = document.getElementById(sideVerdi.value);
+    side.appendChild(duErHerKnapp);
+    side.style.backgroundColor = 'lightblue';
 });
 
 const velgSide =  document.querySelectorAll('.velg_side');
