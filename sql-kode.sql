@@ -1,7 +1,7 @@
-CREATE DATABASE IF NOT EXISTS portfølje;
+CREATE DATABASE IF NOT EXISTS portfoolje;
 
 
-CREATE TABLE brukere (
+CREATE TABLE if not exists brukere (
     bruker_id INT AUTO_INCREMENT PRIMARY KEY,
     navn VARCHAR(255) NOT NULL,
     etternavn VARCHAR(255) NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE brukere (
 
 
 
-CREATE TABLE poeng_liste (
+CREATE TABLE if not exists poeng_liste (
     poeng_id INT AUTO_INCREMENT PRIMARY KEY,
     bruker_id INT NOT NULL,
     poeng INT NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE poeng_liste (
 
 
 
-CREATE TABLE bokbestillinger (
+CREATE TABLE if not exists bokbestillinger (
     bok_id INT AUTO_INCREMENT PRIMARY KEY,
     bruker_id INT NOT NULL,
     Boknavn VARCHAR(255) NOT NULL,

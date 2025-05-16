@@ -2,7 +2,6 @@ function epilepi(){
     let boxes = document.querySelectorAll(".bestillinger_boxbox")
     setInterval(function test() {
         for (let i = 0; i < boxes.length; i++) {
-            console.log("in for loop");
             boxes[i].style.backgroundColor = getRandomColor()
             document.body.style.backgroundColor = getRandomColor()
             document.addEventListener("keydown", function(event) {
@@ -30,7 +29,7 @@ function getRandomColor() {
     return color;
   }
 
-document.addEventListener('DOMContentLoaded', function() {epilepi();});
+// document.addEventListener('DOMContentLoaded', function() {epilepi();});
 
 function tilbakemelding_knapp() {
     console.log("called tilbakemelding_knapp")
@@ -45,8 +44,21 @@ function nullstill() {
     document.querySelector('.tilbakemelding').style.visibility = 'hidden'; 
 }
 
+let duErHerKnapp = document.createElement('div');
+duErHerKnapp.classList.add('duErHerKnapp');
+let duErHerKnappP = document.createElement('p');
+duErHerKnappP.innerHTML = "Du er her";  
+duErHerKnappP.classList.add('duErHerKnappP');
+duErHerKnapp.appendChild(duErHerKnappP);
 
 let sideVerdi = document.querySelector('.hidden');
+
+document.addEventListener('DOMContentLoaded', function() {
+    let side = document.getElementById(sideVerdi.value);
+    side.appendChild(duErHerKnapp);
+    side.style.backgroundColor = 'lightblue';
+});
+
 const velgSide =  document.querySelectorAll('.velg_side');
 
 velgSide.forEach(function(element) {
@@ -60,8 +72,10 @@ velgSide.forEach(function(element) {
     });
 });
 
-let admin = document.querySelector('#admin');
-console.log(admin);
-admin.addEventListener("click", function(){
-    admin_passord()
-});
+if (document.querySelector("#admin")) {
+    let admin = document.querySelector('#admin');
+    console.log(admin);
+    admin.addEventListener("click", function(){
+        admin_passord()
+    });
+}

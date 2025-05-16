@@ -1,19 +1,42 @@
 import mysql.connector
 import bcrypt
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
+HighScore = []
 bruker = []
+
+def make_database():
+    db = mysql.connector.connect(
+        host=os.getenv("HOST"),
+        user=os.getenv("USER"),
+        password=os.getenv("PASSWORD"),
+        port=os.getenv("PORT"),
+        charset=os.getenv("CHARSET"),
+        collation=os.getenv("COLLATION")
+    )
+    cursor = db.cursor()
+    cursor.execute(''' create database if not exists portfoolje; ''')
+    db.commit()
+    db.close()
+    
+make_database()
+
 def connect_to_db():
     mydb = mysql.connector.connect(
-                host="127.0.0.1",
-                user="Anders",
-                password="Anders2018",
-                database="nettsidespill"
-                )
-    
+        host=os.getenv("HOST"),
+        user=os.getenv("USER"),
+        password=os.getenv("PASSWORD"),
+        database=os.getenv("DATABASE"),
+        port=os.getenv("PORT"),
+        charset=os.getenv("CHARSET"),
+        collation=os.getenv("COLLATION")
+    )
     return mydb
 
-def create_database():
+def create_database_tables():
     db = connect_to_db()
     cursor = db.cursor()
     
@@ -36,8 +59,8 @@ def create_database():
             bruker_id INT NOT NULL,
             poeng INT NOT NULL,
             oppnådd_tidspunkt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (bruker_id) REFERENCES brukere(bruker_id) ON DELETE CASCADE
-        );''')
+            FOREIGN KEY (bruker_id) REFERENCES brukere(bruker_id) ON DELETE CASCADE);
+            ''')
     
     cursor.execute('''CREATE TABLE if not exists bokbestillinger (
             bok_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -48,13 +71,13 @@ def create_database():
             Beskrivelse VARCHAR(255) NOT NULL, 
             is_active VARCHAR(255) NOT NULL DEFAULT 'yes',
             opprettet_tidspunkt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (bruker_id) REFERENCES brukere(bruker_id) ON DELETE CASCADE
-        );''')
+            FOREIGN KEY (bruker_id) REFERENCES brukere(bruker_id) ON DELETE CASCADE);
+            ''')
     
     db.commit()
     db.close()
 
-create_database()
+create_database_tables()
 
 def hash_passord(passord):
     passord = passord.encode("utf-8" )
@@ -85,8 +108,8 @@ def logg_inn(email, passord):
 
     global bruker, id_bruker
     try:
-        sql = "SELECT bruker_id, passord, role, navn FROM brukere WHERE email = " + "'" + email + "'"
-        cursor.execute(sql)
+        sql = "SELECT bruker_id, passord, role, navn FROM brukere WHERE email = %s"
+        cursor.execute(sql, (email,))
         bruker = cursor.fetchone()
         db.close()
         id_bruker = bruker
@@ -97,7 +120,26 @@ def logg_inn(email, passord):
     except TypeError:
         return "Feil email eller passord."
 
+def lagre_poeng(bruker, score):
+        db = connect_to_db()
+        cursor = db.cursor()
 
+        sql = "INSERT INTO poeng_liste (bruker_id, poeng) VALUES (%s, %s)"
+        cursor.execute(sql, (bruker[0], score))
+        db.commit()
+        db.close()
+
+def hent_poeng(bruker):
+    db = connect_to_db()
+    cursor = db.cursor()
+
+    sql = "SELECT poeng FROM poeng_liste WHERE bruker_id = " + str(bruker[0])
+    cursor.execute(sql)
+    
+    poeng_liste = cursor.fetchall()
+    for values in poeng_liste:
+        HighScore.append(values[0])
+    db.close()
 
 def spiller_poeng():
     poengliste = []
@@ -221,10 +263,12 @@ def sebokbestillinger():
         return "Ingen bokbestilling registrert."
 
 def delete_bestillinger(bokid):
-    
+    print(bokid)
     db = connect_to_db()
     cursor = db.cursor()
-    sql = "update bokbestillinger set is_active = 'no' where bok_id = " + bokid
+    print(bokid)
+    sql = "update bokbestillinger set is_active = 'no' where bok_id = " + bokid 
+    print(sql)
     cursor.execute(sql)
-    
+    db.commit()
     db.close()
